@@ -1,0 +1,6 @@
+.split-pane{
+-fx-background-color:rgb(70, 70, 70);
+}
+.split-pane-divider{
+-fx-color:rgb(100, 100, 100);
+}
