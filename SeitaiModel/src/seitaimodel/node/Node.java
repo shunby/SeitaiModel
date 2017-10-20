@@ -1,6 +1,19 @@
 package seitaimodel.node;
 
+
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
+
 public class Node {
+	/**量*/
+	private double amount;
 	/**エネルギー*/
 	private double energy;
 	/**水*/
@@ -12,11 +25,50 @@ public class Node {
 	/**炭素*/
 	private double carbon;
 
-	public void update(){
+	/**画面表示用の図形*/
+	private Shape shape;
+	/**画面表示用のText*/
+	private Text text;
+	/**表示座標*/
+	private double x, y;
+	/**名前*/
+	private String name;
+
+	public Node(String name, double x, double y) {
+		this.x = x;
+		this.y = y;
+		this.name = name;
+
+		shape = new Rectangle(0, 0, 130, 130);
+		Rectangle rect = (Rectangle)shape;
+		rect.setArcWidth(20);
+		rect.setArcHeight(20);
+
+		shape.getTransforms().add(new Translate(x, y));
+
+		text = new Text(toString());
+		text.setFill(Color.WHITE);
+		text.getTransforms().add(new Translate(x + 10, y + 20));
 
 	}
 
+	public void update(){
+		text.setText(toString());
+	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		String reline = System.getProperty("line.separator");
+		sb.append("      ").append(name).append(reline);
+		sb.append("amount: ").append(amount).append(reline)
+			.append("N: ").append(nitrogen).append(reline)
+			.append("C: ").append(carbon).append(reline)
+			.append("O: ").append(oxygen).append(reline)
+			.append("Energy: ").append(energy).append(reline)
+			.append("water: ").append(water).append(reline);
+		return sb.toString();
+	}
 
 
 
@@ -89,6 +141,17 @@ public class Node {
 		}
 	}
 
+	public double takeAmount(double take) {
+		if (take < amount) {
+			amount -= take;
+			return take;
+		} else {
+			double tmp = amount;
+			amount = 0;
+			return tmp;
+		}
+	}
+
 	public double getEnergy() {
 		return energy;
 	}
@@ -129,5 +192,36 @@ public class Node {
 		this.carbon = carbon;
 	}
 
+	public double getAmount() {
+		return amount;
+	}
+
+	public Shape getShape() {
+		return shape;
+	}
+
+	public void setPolygon(Polygon polygon) {
+		this.shape = polygon;
+	}
+
+	public Text getText() {
+		return text;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
 
 }
