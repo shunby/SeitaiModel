@@ -1,59 +1,97 @@
 package seitaimodel.node;
 
 
-import javafx.scene.layout.AnchorPane;
+import java.math.BigDecimal;
+import java.util.Random;
+
+import seitaimodel.Main;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 
-public class Node {
-	/**量*/
-	private double amount;
+public class Node implements Updatable {
 	/**エネルギー*/
-	private double energy;
+	private BigDecimal energy;
 	/**水*/
-	private double water;
+	private BigDecimal water;
 	/**酸素*/
-	private double oxygen;
+	private BigDecimal oxygen;
 	/**窒素*/
-	private double nitrogen;
+	private BigDecimal nitrogen;
 	/**炭素*/
-	private double carbon;
+	private BigDecimal carbon;
+
 
 	/**画面表示用の図形*/
 	private Shape shape;
 	/**画面表示用のText*/
-	private Text text;
+	private Label text;
 	/**表示座標*/
 	private double x, y;
 	/**名前*/
 	private String name;
 
-	public Node(String name, double x, double y) {
+	public Node(Pane pane, String name, double x, double y) {
 		this.x = x;
 		this.y = y;
 		this.name = name;
+		initVar();
 
 		shape = new Rectangle(0, 0, 130, 130);
 		Rectangle rect = (Rectangle)shape;
 		rect.setArcWidth(20);
 		rect.setArcHeight(20);
 
-		shape.getTransforms().add(new Translate(x, y));
+		shape.setTranslateX(x);
+		shape.setTranslateY(y);
+		Random r = new Random();
+		shape.setFill(new Color(r.nextDouble()/2, r.nextDouble()/2, r.nextDouble()/2, 1));
 
-		text = new Text(toString());
-		text.setFill(Color.WHITE);
-		text.getTransforms().add(new Translate(x + 10, y + 20));
+		shape.setOnDragDetected((e)->{
+			Dragboard db = shape.startDragAndDrop(TransferMode.MOVE);
+			ClipboardContent content = new ClipboardContent();
+			content.putString(name);//ドラッグされたとき、クリップボードにnameをコピー
+			db.setContent(content);
+			e.consume();
+		});
+
+
+		text = new Label("");
+		text.setTextFill(Color.WHITE);
+		text.setTranslateX(x + 10);
+		text.setTranslateY(y + 20);
+		text.setMouseTransparent(true);
+
+		pane.getChildren().addAll(shape, text);
 
 	}
 
+	private void initVar(){
+		carbon	= new BigDecimal(0);
+		oxygen 	= new BigDecimal(0);
+		nitrogen= new BigDecimal(0);
+		energy= new BigDecimal(0);
+		water = new BigDecimal(0);
+	}
+
 	public void update(){
-		text.setText(toString());
+
+		Platform.runLater(()->text.setText(toString()));
+
+		text.setTranslateX(x + 10);
+		text.setTranslateY(y + 20);
+		shape.setTranslateX(x);
+		shape.setTranslateY(y);
+
 	}
 
 	@Override
@@ -61,8 +99,7 @@ public class Node {
 		StringBuilder sb = new StringBuilder();
 		String reline = System.getProperty("line.separator");
 		sb.append("      ").append(name).append(reline);
-		sb.append("amount: ").append(amount).append(reline)
-			.append("N: ").append(nitrogen).append(reline)
+		sb.append("N: ").append(nitrogen).append(reline)
 			.append("C: ").append(carbon).append(reline)
 			.append("O: ").append(oxygen).append(reline)
 			.append("Energy: ").append(energy).append(reline)
@@ -86,114 +123,101 @@ public class Node {
 
 
 	//get/set----------------------------------------------------------
-	public double takeCarbon(double take) {
-		if (take < carbon) {
-			carbon -= take;
+	public BigDecimal takeCarbon(BigDecimal take) {
+		if (take.doubleValue() <= carbon.doubleValue()) {
+			carbon = carbon.subtract(take);
 			return take;
 		} else {
-			double tmp = carbon;
-			carbon = 0;
+			BigDecimal tmp = new BigDecimal(carbon.toString());
+			carbon = new BigDecimal("0");
 			return tmp;
 		}
 	}
 
-	public double takeNitrogen(double take) {
-		if (take < nitrogen) {
-			nitrogen -= take;
+
+	public BigDecimal takeEnergy(BigDecimal take) {
+		if (take.doubleValue() <= energy.doubleValue()) {
+			energy = energy.subtract(take);
 			return take;
 		} else {
-			double tmp = nitrogen;
-			nitrogen = 0;
+			BigDecimal tmp = new BigDecimal(energy.toString());
+			energy = new BigDecimal("0");
 			return tmp;
 		}
 	}
 
-	public double takeEnergy(double take) {
-		if (take < energy) {
-			energy -= take;
+	public BigDecimal takeWater(BigDecimal take) {
+		if (take.doubleValue() <= water.doubleValue()) {
+			water = water.subtract(take);
 			return take;
 		} else {
-			double tmp = energy;
-			energy = 0;
+			BigDecimal tmp = new BigDecimal(water.toString());
+			water = new BigDecimal("0");
 			return tmp;
 		}
 	}
 
-	public double takeWater(double take) {
-		if (take < water) {
-			water -= take;
+	public BigDecimal takeOxygen(BigDecimal take) {
+		if (take.doubleValue() <= oxygen.doubleValue()) {
+			oxygen = oxygen.subtract(take);
 			return take;
 		} else {
-			double tmp = water;
-			water = 0;
+			BigDecimal tmp = new BigDecimal(oxygen.toString());
+			oxygen = new BigDecimal("0");
 			return tmp;
 		}
 	}
 
-	public double takeOxygen(double take) {
-		if (take < oxygen) {
-			oxygen -= take;
+	public BigDecimal takeNitrogen(BigDecimal take) {
+		if (take.doubleValue() <= nitrogen.doubleValue()) {
+			nitrogen = nitrogen.subtract(take);
 			return take;
 		} else {
-			double tmp = oxygen;
-			oxygen = 0;
+			BigDecimal tmp = new BigDecimal(nitrogen.toString());
+			nitrogen = new BigDecimal("0");
 			return tmp;
 		}
 	}
 
-	public double takeAmount(double take) {
-		if (take < amount) {
-			amount -= take;
-			return take;
-		} else {
-			double tmp = amount;
-			amount = 0;
-			return tmp;
-		}
-	}
 
-	public double getEnergy() {
+	public BigDecimal getEnergy() {
 		return energy;
 	}
 
-	public void setEnergy(double energy) {
+	public void setEnergy(BigDecimal energy) {
 		this.energy = energy;
 	}
 
-	public double getWater() {
+	public BigDecimal getWater() {
 		return water;
 	}
 
-	public void setWater(double water) {
+	public void setWater(BigDecimal water) {
 		this.water = water;
 	}
 
-	public double getOxygen() {
+	public BigDecimal getOxygen() {
 		return oxygen;
 	}
 
-	public void setOxygen(double oxygen) {
+	public void setOxygen(BigDecimal oxygen) {
 		this.oxygen = oxygen;
 	}
 
-	public double getNitrogen() {
+	public BigDecimal getNitrogen() {
 		return nitrogen;
 	}
 
-	public void setNitrogen(double nitrogen) {
+	public void setNitrogen(BigDecimal nitrogen) {
 		this.nitrogen = nitrogen;
 	}
 
-	public double getCarbon() {
+	public BigDecimal getCarbon() {
 		return carbon;
 	}
 
-	public void setCarbon(double carbon) {
+	public void setCarbon(BigDecimal carbon) {
 		this.carbon = carbon;
-	}
-
-	public double getAmount() {
-		return amount;
 	}
 
 	public Shape getShape() {
@@ -204,7 +228,7 @@ public class Node {
 		this.shape = polygon;
 	}
 
-	public Text getText() {
+	public Label getText() {
 		return text;
 	}
 
@@ -222,6 +246,14 @@ public class Node {
 
 	public void setY(double y) {
 		this.y = y;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
