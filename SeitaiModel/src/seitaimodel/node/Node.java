@@ -20,33 +20,33 @@ import javafx.scene.transform.Translate;
 
 public class Node implements Updatable {
 	/**エネルギー*/
-	private BigDecimal energy;
+	protected BigDecimal energy;
 	/**水*/
-	private BigDecimal water;
+	protected BigDecimal water;
 	/**酸素*/
-	private BigDecimal oxygen;
+	protected BigDecimal oxygen;
 	/**窒素*/
-	private BigDecimal nitrogen;
+	protected BigDecimal nitrogen;
 	/**炭素*/
-	private BigDecimal carbon;
+	protected BigDecimal carbon;
 
 
 	/**画面表示用の図形*/
-	private Shape shape;
+	protected Shape shape;
 	/**画面表示用のText*/
-	private Label text;
+	protected Label text;
 	/**表示座標*/
-	private double x, y;
+	protected double x, y;
 	/**名前*/
-	private String name;
+	protected String name;
 
-	public Node(Pane pane, String name, double x, double y) {
+	public Node(Pane pane, String name, double x, double y, double w, double h) {
 		this.x = x;
 		this.y = y;
 		this.name = name;
 		initVar();
 
-		shape = new Rectangle(0, 0, 130, 130);
+		shape = new Rectangle(0, 0, w, h);
 		Rectangle rect = (Rectangle)shape;
 		rect.setArcWidth(20);
 		rect.setArcHeight(20);

@@ -14,12 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
-
-
-
-
+import seitaimodel.node.Ground;
 import seitaimodel.node.Node;
 import seitaimodel.node.Pipe;
 import seitaimodel.node.Updatable;
@@ -77,8 +72,8 @@ public class Main extends Application {
 			e.consume();
 		});
 
-		Node node = new Node(mainScreen, "plant", 100, 100);
-		Node n1 = new Node(mainScreen, "aaa", 30, 300);
+		Node node = new Node(mainScreen, "plant", 100, 100, 130, 130);
+		Node n1 = new Ground(mainScreen, 100, 300);
 		node.setEnergy(new BigDecimal("1000"));
 		Pipe p = new Pipe(mainScreen, node, n1);
 		p.energy = new BigDecimal("0.01");
@@ -100,7 +95,6 @@ public class Main extends Application {
 			//FXMLをロード・シーン作成
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("res/fxml/Main.fxml"));
-			System.out.println(getClass().getResource("res/fxml/Main.fxml"));
 			loader.setController(this);
 			Scene scene = new Scene(loader.load());
 			stage.setScene(scene);
