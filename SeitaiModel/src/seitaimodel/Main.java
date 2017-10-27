@@ -20,6 +20,7 @@ import seitaimodel.node.Diazotroph;
 import seitaimodel.node.Ground;
 import seitaimodel.node.Node;
 import seitaimodel.node.Pipe;
+import seitaimodel.node.Plant;
 import seitaimodel.node.Updatable;
 import javafx.application.Application;
 import javafx.concurrent.Task;
@@ -91,23 +92,33 @@ public class Main extends Application {
 		Ground ground = new Ground(mainScreen, 100, 500);
 		Air air = new Air(mainScreen, 100, 0);
 		Diazotroph dia = new Diazotroph(mainScreen, 200, 300);
+		Plant plant = new Plant(mainScreen, 260, 300);
 
 		Pipe air_dia = new Pipe(mainScreen, air, dia);
 		air_dia.nitrogen = (from, to)->{
-			to.takeNitrogen(from.takeNitrogen(new BigDecimal("0.001")).multiply(new BigDecimal("-1")));
-			to.takeEnergy(new BigDecimal("-0.001"));
+			to.takeNitrogen(from.takeNitrogen(new BigDecimal("0.005")).multiply(new BigDecimal("-1")));
+			to.takeEnergy(new BigDecimal("-0.003"));
 		};
 
 		Pipe dia_gnd = new Pipe(mainScreen, dia, ground);
 		dia_gnd.nitrogen = (from, to)->{
+			to.takeNitrogen(from.takeNitrogen(new BigDecimal("0.002")).multiply(new BigDecimal("-1")));
+		};
+
+		Pipe gnd_plant = new Pipe(mainScreen, ground, plant);
+		gnd_plant.nitrogen = (from, to)->{
 			to.takeNitrogen(from.takeNitrogen(new BigDecimal("0.001")).multiply(new BigDecimal("-1")));
 		};
+
+
 
 		objects.put(air.getName(), air);
 		objects.put(ground.getName(), ground);
 		objects.put(dia.getName(), dia);
 		objects.put(air_dia.toString(), air_dia);
 		objects.put(dia_gnd.toString(), dia_gnd);
+		objects.put(plant.getName(), plant);
+		objects.put(gnd_plant.toString(), gnd_plant);
 	}
 
 	private void load(Stage stage){
