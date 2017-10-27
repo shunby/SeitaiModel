@@ -2,6 +2,7 @@ package seitaimodel.node;
 
 import java.math.BigDecimal;
 import java.util.Random;
+import java.util.function.BiConsumer;
 
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
@@ -19,16 +20,16 @@ public class Pipe implements Updatable {
 	private Node to;
 
 	//導通率
-	/**エネルギー導通率*/
-	public BigDecimal energy;
-	/**水導通率*/
-	public BigDecimal water;
-	/**酸素導通率*/
-	public BigDecimal oxygen;
-	/**窒素導通率*/
-	public BigDecimal nitrogen;
-	/**炭素導通率*/
-	public BigDecimal carbon;
+	/**エネルギー導通率関数*/
+	public BiConsumer<Node, Node> energy;
+	/**水導通率関数*/
+	public BiConsumer<Node, Node> water;
+	/**酸素導通率関数*/
+	public BiConsumer<Node, Node> oxygen;
+	/**窒素導通率関数*/
+	public BiConsumer<Node, Node> nitrogen;
+	/**炭素導通率関数*/
+	public BiConsumer<Node, Node> carbon;
 	/**矢印*/
 	public Shape shape;
 
@@ -58,11 +59,21 @@ public class Pipe implements Updatable {
 		pane.getChildren().add(0,shape);
 	}
 	private void initVar(){
-		carbon	= new BigDecimal(0);
-		oxygen 	= new BigDecimal(0);
-		nitrogen= new BigDecimal(0);
-		energy= new BigDecimal(0);
-		water = new BigDecimal(0);
+		carbon	= (from, to)->{
+			to.takeCarbon(from.takeCarbon(BigDecimal.ZERO).multiply(new BigDecimal("-1")));
+		};
+		oxygen 	= (from, to)->{
+			to.takeOxygen(from.takeOxygen(BigDecimal.ZERO).multiply(new BigDecimal("-1")));
+		};
+		nitrogen= (from, to)->{
+			to.takeNitrogen(from.takeNitrogen(BigDecimal.ZERO).multiply(new BigDecimal("-1")));
+		};
+		energy	= (from, to)->{
+			to.takeEnergy(from.takeEnergy(BigDecimal.ZERO).multiply(new BigDecimal("-1")));
+		};
+		water	= (from, to)->{
+			to.takeWater(from.takeWater(BigDecimal.ZERO).multiply(new BigDecimal("-1")));
+		};
 	}
 
 	public void update() {
@@ -79,11 +90,12 @@ public class Pipe implements Updatable {
 			shape.setTranslateX((fx + tx)/2);shape.setTranslateY((fy + ty)/2);
 			shape.setRotate(90 + Math.toDegrees(Math.atan2(ty - fy, tx - fx)) );
 
-			to.takeEnergy(from.takeEnergy(energy).multiply(new BigDecimal("-1")));
-			to.takeWater(from.takeWater(water).multiply(new BigDecimal("-1")));
-			to.takeOxygen(from.takeOxygen(oxygen).multiply(new BigDecimal("-1")));
-			to.takeNitrogen(from.takeNitrogen(nitrogen).multiply(new BigDecimal("-1")));
-			to.takeCarbon(from.takeCarbon(carbon).multiply(new BigDecimal("-1")));
+			carbon.accept(from, to);
+			oxygen.accept(from, to);
+			nitrogen.accept(from, to);
+			energy.accept(from, to);
+			water.accept(from, to);
+
 
 
 	}
