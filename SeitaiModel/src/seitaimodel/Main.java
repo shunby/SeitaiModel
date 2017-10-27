@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import seitaimodel.node.Ground;
 import seitaimodel.node.Node;
@@ -76,7 +77,7 @@ public class Main extends Application {
 		Node n1 = new Ground(mainScreen, 100, 300);
 		node.setEnergy(new BigDecimal("1000"));
 		Pipe p = new Pipe(mainScreen, node, n1);
-		p.energy = new BigDecimal("0.01");
+		p.energy = (from, to)->{to.takeEnergy(from.takeEnergy(new BigDecimal("0.1")).multiply(new BigDecimal("-1")));};
 		objects.put(node.getName(), node);
 		objects.put(n1.getName(), n1);
 		objects.put(p.toString(), p);
