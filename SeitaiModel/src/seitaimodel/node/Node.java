@@ -100,8 +100,8 @@ public class Node implements Updatable {
 		String reline = System.getProperty("line.separator");
 		sb.append("      ").append(name).append(reline);
 		sb.append("N: ").append(nitrogen).append(reline)
-			.append("C: ").append(carbon).append(reline)
 			.append("O: ").append(oxygen).append(reline)
+			.append("C: ").append(carbon).append(reline)
 			.append("Energy: ").append(energy).append(reline)
 			.append("water: ").append(water).append(reline);
 		return sb.toString();

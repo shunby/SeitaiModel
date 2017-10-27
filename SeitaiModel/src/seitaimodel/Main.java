@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import seitaimodel.node.Air;
 import seitaimodel.node.Ground;
 import seitaimodel.node.Node;
 import seitaimodel.node.Pipe;
@@ -73,14 +74,7 @@ public class Main extends Application {
 			e.consume();
 		});
 
-		Node node = new Node(mainScreen, "plant", 100, 100, 130, 130);
-		Node n1 = new Ground(mainScreen, 100, 300);
-		node.setEnergy(new BigDecimal("1000"));
-		Pipe p = new Pipe(mainScreen, node, n1);
-		p.energy = (from, to)->{to.takeEnergy(from.takeEnergy(new BigDecimal("0.1")).multiply(new BigDecimal("-1")));};
-		objects.put(node.getName(), node);
-		objects.put(n1.getName(), n1);
-		objects.put(p.toString(), p);
+		initSimulation();
 
 		MainThread th = new MainThread();
 		stage.setOnCloseRequest((e)->{
@@ -89,6 +83,14 @@ public class Main extends Application {
 		new Thread(th).start();
 
 
+	}
+
+	private void initSimulation(){
+		Ground ground = new Ground(mainScreen, 100, 300);
+		Air air = new Air(mainScreen, 100, 0);
+
+		objects.put(air.getName(), air);
+		objects.put(ground.getName(), ground);
 	}
 
 	private void load(Stage stage){
