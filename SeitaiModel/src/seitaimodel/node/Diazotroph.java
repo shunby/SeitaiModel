@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
 public class Diazotroph extends Node {
 
 	public Diazotroph(Pane pane, double x, double y) {
-		super(pane, "Diazotroph", x, y, 130, 130);
+		super(pane, "窒素固定細菌", x, y, 130, 130);
 	}
 
 }

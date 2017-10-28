@@ -7,7 +7,7 @@ import javafx.scene.layout.Pane;
 public class Air extends Node {
 
 	public Air(Pane pane, double x, double y) {
-		super(pane, "Air", x, y, 260, 130);
+		super(pane, "大気", x, y, 260, 130);
 		/*
 		 * 大気圧: 1013hPa = 101300N/m^2
 		 * g = 10とする

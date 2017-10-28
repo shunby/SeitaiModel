@@ -17,6 +17,7 @@ import java.util.function.BiConsumer;
 
 import seitaimodel.node.Air;
 import seitaimodel.node.Diazotroph;
+import seitaimodel.node.Eater;
 import seitaimodel.node.Ground;
 import seitaimodel.node.Node;
 import seitaimodel.node.Pipe;
@@ -93,6 +94,7 @@ public class Main extends Application {
 		Air air = new Air(mainScreen, 100, 0);
 		Diazotroph dia = new Diazotroph(mainScreen, 200, 300);
 		Plant plant = new Plant(mainScreen, 260, 300);
+		Eater eater1 = new Eater(mainScreen, "1次捕食者", 300, 150);
 
 		Pipe air_dia = new Pipe(mainScreen, air, dia);
 		air_dia.nitrogen = (from, to)->{
@@ -110,6 +112,11 @@ public class Main extends Application {
 			to.takeNitrogen(from.takeNitrogen(new BigDecimal("0.001")).multiply(new BigDecimal("-1")));
 		};
 
+		Pipe plant_eater1 = new Pipe(mainScreen, plant, eater1);
+		plant_eater1.nitrogen = (from, to)->{
+			to.takeNitrogen(from.takeNitrogen(new BigDecimal("0.0001")).multiply(new BigDecimal("-1")));
+		};
+
 
 
 		objects.put(air.getName(), air);
@@ -119,6 +126,8 @@ public class Main extends Application {
 		objects.put(dia_gnd.toString(), dia_gnd);
 		objects.put(plant.getName(), plant);
 		objects.put(gnd_plant.toString(), gnd_plant);
+		objects.put(eater1.getName(), eater1);
+		objects.put(plant_eater1.toString(), plant_eater1);
 	}
 
 	private void load(Stage stage){
