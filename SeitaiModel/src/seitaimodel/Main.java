@@ -134,7 +134,7 @@ public class Main extends Application {
 		try {
 			//FXMLをロード・シーン作成
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("res/fxml/Main.fxml"));
+			loader.setLocation(new File("res/fxml/Main.fxml").toURI().toURL());
 			loader.setController(this);
 			Scene scene = new Scene(loader.load());
 			stage.setScene(scene);
